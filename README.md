@@ -148,9 +148,70 @@ storage/
 
 ---
 
-## License
+## Legal & Licensing
 
-Apache 2.0 (see LICENSE)
+### License
+
+Grove is released under the **Apache License 2.0** (see [LICENSE](LICENSE) for full text).
+
+In summary, you may:
+- ✅ Use Grove commercially
+- ✅ Modify Grove for your needs
+- ✅ Distribute Grove or derivatives
+- ✅ Include Grove in proprietary software
+
+Under the condition that you:
+- 📝 Include a copy of the LICENSE and NOTICE
+- ⚠️ State significant changes made to Grove
+- 📋 Include copyright and license notices from the original
+
+### Contributing
+
+We welcome community contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for:
+- How to report issues and submit pull requests
+- Code style and testing expectations
+- Contributor license agreement (CLAs)
+- Recognition and attribution
+
+### Code of Conduct
+
+This project adheres to the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md). We are committed to providing a welcoming and inclusive environment for all participants.
+
+### Authors and Attribution
+
+- Original authors and contributors are recognized in [AUTHORS](AUTHORS)
+- All contributors retain copyright of their work
+- See commit history for complete contribution attribution
+- Third-party licenses documented in [NOTICE](NOTICE)
+
+### Patent Grant
+
+If you have patents that cover Grove's functionality, the Apache 2.0 license includes an explicit patent grant. See the LICENSE file for details.
+
+### Disclaimer
+
+Grove is provided "AS IS" without warranty. See the [LICENSE](LICENSE) file for complete terms and disclaimers.
+
+### Security & Liability
+
+Grove is provided as-is and is **NOT recommended for production use without hardening**. Known limitations include:
+
+- ⚠️ No authentication or authorization (all endpoints public)
+- ⚠️ No HTTPS/SSL enforcement
+- ⚠️ No rate limiting
+- ⚠️ No input validation hardening
+- ⚠️ Artifacts stored unencrypted on disk
+
+**Never expose Grove directly to untrusted networks.** Use behind a reverse proxy, firewall, or VPN.
+
+### Third-Party Notices
+
+Grove depends on third-party libraries. See [NOTICE](NOTICE) for:
+- Complete list of dependencies and their licenses
+- Attribution information
+- License text and compatibility notes
+
+All dependencies are compatible with Apache 2.0.
 
 ---
 

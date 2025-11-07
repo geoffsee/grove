@@ -1,0 +1,134 @@
+Grove
+Copyright 2024 Grove Contributors
+
+This product includes software developed by the Grove project.
+
+================================================================================
+THIRD-PARTY LICENSES
+================================================================================
+
+This project includes third-party software components with the following licenses:
+
+APACHE LICENSE 2.0 (https://www.apache.org/licenses/LICENSE-2.0)
+================================================================================
+
+The following components are licensed under the Apache License, Version 2.0:
+
+- Spring Boot (https://spring.io/projects/spring-boot)
+  - spring-boot-starter-web
+  - spring-boot-starter-validation
+  - spring-boot-starter-test
+  - spring-boot-configuration-processor
+  - spring-boot-gradle-plugin
+
+- Spring Framework (https://spring.io/)
+  - spring-core
+  - spring-context
+  - spring-beans
+  - spring-web
+  - spring-webmvc
+
+- Apache Commons (https://commons.apache.org/)
+  - commons-logging
+  - commons-codec
+  - commons-collections
+
+- Jackson (https://github.com/FasterXML/jackson)
+  - jackson-databind
+  - jackson-core
+  - jackson-annotations
+  - jackson-module-kotlin
+
+- Kotlin (https://kotlinlang.org/)
+  - kotlin-stdlib
+  - kotlin-reflect
+  - kotlinx-coroutines
+
+- Google (https://developers.google.com/)
+  - guava
+
+ECLIPSE PUBLIC LICENSE 1.0 (https://www.eclipse.org/legal/epl-1.0/)
+================================================================================
+
+The following components are licensed under the Eclipse Public License, Version 1.0:
+
+- JUnit Platform (https://junit.org/junit5/)
+  - junit-platform-launcher
+  - junit-platform-commons
+
+APACHE LICENSE 2.0 or ECLIPSE PUBLIC LICENSE 1.0
+================================================================================
+
+The following components are dual-licensed under Apache License 2.0 or EPL 1.0:
+
+- JUnit 5 (https://junit.org/junit5/)
+  - junit-jupiter-api
+  - junit-jupiter-engine
+
+BSD LICENSES
+================================================================================
+
+The following components are licensed under BSD licenses:
+
+- ANTLR (https://www.antlr.org/)
+  - antlr4-runtime
+
+MOZILLA PUBLIC LICENSE 2.0 (https://www.mozilla.org/en-US/MPL/2.0/)
+================================================================================
+
+The following components are licensed under the Mozilla Public License, Version 2.0:
+
+- Kotlin Coroutines (https://github.com/Kotlin/kotlinx.coroutines)
+
+MIT LICENSE (https://opensource.org/licenses/MIT)
+================================================================================
+
+The following components are licensed under the MIT License:
+
+- SLF4J (https://www.slf4j.org/)
+  - slf4j-api
+  - logback-core
+  - logback-classic
+
+CREATIVE COMMONS AND OTHER LICENSES
+================================================================================
+
+- Documentation and examples may be distributed under different terms.
+  See individual files for specific license information.
+
+================================================================================
+COMPLIANCE
+================================================================================
+
+Grove's use of third-party components is compliant with their respective
+licenses. When distributing Grove, include:
+
+1. A copy of this NOTICE file
+2. A copy of the LICENSE file (Apache 2.0)
+3. COPYING notice files from each third-party dependency (if required)
+
+For the most current and accurate license information for dependencies,
+please review:
+- build.gradle.kts (dependency declarations)
+- Gradle dependency reports: ./gradlew dependencies
+
+================================================================================
+PATENT GRANT
+================================================================================
+
+If any of the components included in this product include patent grants,
+those grants apply only to the specific version of the component included,
+and do not extend to modified or derivative works.
+
+For Apache 2.0 licensed components, see the patent grant and termination
+clauses in the Apache License text.
+
+================================================================================
+DISCLAIMER
+================================================================================
+
+THIS PRODUCT IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+
+See the LICENSE file for full terms and conditions.

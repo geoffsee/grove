@@ -1,0 +1,88 @@
+Grove Contributors and Maintainers
+
+The Grove project is maintained and contributed to by the following individuals:
+
+================================================================================
+ORIGINAL CREATORS
+================================================================================
+
+Grove was originally created and is maintained by the Grove development community.
+
+================================================================================
+CONTRIBUTORS
+================================================================================
+
+Grove welcomes contributions from the community. Contributors are recognized in:
+
+1. Git Commit History
+   - All contributors are credited in the commit log
+   - Run: git log --format="%an <%ae>" | sort | uniq
+
+2. Pull Request Records
+   - GitHub pull request history documents all contributions
+   - See: https://github.com/gsio-ltd/grove/pulls
+
+3. Issue Tracker
+   - Issue reports and discussions available at:
+   - See: https://github.com/gsio-ltd/grove/issues
+
+4. Release Notes
+   - Contributors recognized in each release announcement
+
+================================================================================
+LICENSING AND COPYRIGHT
+================================================================================
+
+COLLECTIVE COPYRIGHT:
+All contributors grant their contributions under the Apache License 2.0.
+The Grove project holds a collective right to use, modify, and distribute
+all contributions under this license.
+
+INDIVIDUAL CONTRIBUTORS:
+Contributors retain copyright of their original work while granting Grove
+and its users the rights under the Apache License 2.0.
+
+For specific contributions, refer to:
+- Git commit metadata: git show <commit-hash>
+- Pull request records: GitHub PR interface
+- File headers: See SPDX-License-Identifier and Copyright notices in source files
+
+================================================================================
+HOW TO BE RECOGNIZED AS A CONTRIBUTOR
+================================================================================
+
+1. Submit a pull request or code contribution
+2. Report a significant bug or feature request
+3. Contribute documentation or examples
+4. Help with testing, code review, or maintenance
+
+See CONTRIBUTING.md for guidelines on how to contribute.
+
+================================================================================
+CONTRIBUTOR AGREEMENT
+================================================================================
+
+By submitting contributions to Grove, you agree to:
+
+1. License your contribution under the Apache License 2.0
+2. Warrant that you own or have rights to the contribution
+3. Grant Grove the right to use, modify, and distribute your work
+4. Accept the terms in CONTRIBUTING.md
+
+See CONTRIBUTING.md and LICENSE for full legal terms.
+
+================================================================================
+ACKNOWLEDGMENTS
+================================================================================
+
+We thank all contributors, users, and the open source community for their
+support in making Grove better.
+
+Special thanks to:
+- The Spring Boot and Kotlin communities
+- The npm and PyPI package management communities
+- Contributors to the open source ecosystem
+
+For the most current contributor list, see:
+- GitHub Contributors: https://github.com/gsio-ltd/grove/contributors
+- Commit History: git log --all --format="%an" | sort | uniq -c | sort -rn

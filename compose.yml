@@ -1,0 +1,23 @@
+services:
+  grove:
+    build:
+      context: .
+      dockerfile: Containerfile
+    ports:
+      - "8080:8080"
+    # Persist artifacts outside the container
+    volumes:
+      - type: bind
+        source: ./storage
+        target: /data
+    environment:
+      # Point Grove to the mounted storage directory
+      - GROVE_NPM_STORAGE_DIR=/data/npm
+      - GROVE_PYPI_STORAGE_DIR=/data/pypi
+      # Public base URLs used in generated links
+      - GROVE_NPM_BASE_URL=http://localhost:8080/npm
+      - GROVE_PYPI_BASE_URL=http://localhost:8080/pypi
+      # Explicitly set port (matches EXPOSE)
+      - SERVER_PORT=8080
+    restart: unless-stopped
+
