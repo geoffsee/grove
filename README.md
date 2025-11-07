@@ -1,10 +1,11 @@
-# 🌳 Grove: Minimal Self-Hosted npm & PyPI Registry (Spring Boot + Kotlin)
+# 🌳 Grove: Minimal Self-Hosted npm, PyPI & Maven Registry (Spring Boot + Kotlin)
 
-Grove is a tiny, filesystem-backed registry for both npm and PyPI — ideal for air‑gapped development, CI/CD bootstrapping, or local/private publishing and install.
+Grove is a tiny, filesystem-backed registry for npm, PyPI, and Maven — ideal for air‑gapped development, CI/CD bootstrapping, or local/private publishing and install.
 It is a single Spring Boot app, runnable as a jar, requiring no external database or service.
 
 - npm: Minimal endpoints for publish (via curl) and install (unscoped)
 - PyPI: Serves a PEP 503 "simple" index and supports pip install and direct uploads
+- Maven: Acts as a simple Maven repository with curl-based uploads and standard resolver compatibility
 
 > 🔒 No authentication or token required by default
 > 💾 Artifacts are stored on disk — easy to back up, move, or inspect
@@ -23,6 +24,12 @@ It is a single Spring Boot app, runnable as a jar, requiring no external databas
 - `GET /pypi/simple/{project}/` — per‑project HTML page with file links
 - `POST /pypi/api/upload` — upload wheels/tar.gz using multipart (`name`, `version`, `file`)
 - `GET /pypi/packages/{project}/{filename}` — download stored wheel/sdist
+
+### Maven (under `/maven`)
+- `PUT /maven/<path>` — upload any file at a Maven layout path (multipart: `file`)
+- `GET /maven/<path>` — download artifacts and metadata
+  - Example path layout: `/maven/com/example/app/my-app/1.0.0/my-app-1.0.0.jar`
+  - Automatically maintains `maven-metadata.xml` at `groupId/artifactId/`
 
 ### Storage
 - All data is stored under a configured root (`storage/npm`, `storage/pypi` by default)
@@ -64,6 +71,61 @@ grove.pypi.base-url=http://localhost:8080/pypi
 ---
 
 ## Usage
+
+### Maven
+
+#### Upload an artifact (via curl)
+
+Example for groupId=com.example.app, artifactId=my-app, version=1.0.0
+
+```bash
+# Upload JAR
+curl -X PUT "http://localhost:8080/maven/com/example/app/my-app/1.0.0/my-app-1.0.0.jar" \
+  -F file=@build/libs/my-app-1.0.0.jar
+
+# Upload POM (optional but recommended)
+curl -X PUT "http://localhost:8080/maven/com/example/app/my-app/1.0.0/my-app-1.0.0.pom" \
+  -F file=@build/publications/maven/pom-default.xml
+
+# (If you publish sources/javadoc jars, upload them too)
+```
+
+After any upload, Grove updates `maven-metadata.xml` at `com/example/app/my-app/`.
+
+#### Use from Gradle
+
+```kotlin
+repositories {
+    maven {
+        url = uri("http://localhost:8080/maven")
+        // credentials not required in Grove MVP
+        isAllowInsecureProtocol = true
+    }
+}
+
+dependencies {
+    implementation("com.example.app:my-app:1.0.0")
+}
+```
+
+#### Use from Maven
+
+```xml
+<repositories>
+  <repository>
+    <id>grove</id>
+    <url>http://localhost:8080/maven</url>
+  </repository>
+</repositories>
+
+<dependencies>
+  <dependency>
+    <groupId>com.example.app</groupId>
+    <artifactId>my-app</artifactId>
+    <version>1.0.0</version>
+  </dependency>
+</dependencies>
+```
 
 ### PyPI
 
