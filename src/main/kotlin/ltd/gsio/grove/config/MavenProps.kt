@@ -13,19 +13,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package ltd.gsio.grove
+package ltd.gsio.grove.config
 
-import ltd.gsio.grove.config.NpmProps
-import ltd.gsio.grove.config.PypiProps
-import ltd.gsio.grove.config.MavenProps
-import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.context.properties.EnableConfigurationProperties
-import org.springframework.boot.runApplication
+import org.springframework.boot.context.properties.ConfigurationProperties
+import java.nio.file.Path
 
-@SpringBootApplication
-@EnableConfigurationProperties(NpmProps::class, PypiProps::class, MavenProps::class)
-class GroveApplication
-
-fun main(args: Array<String>) {
-    runApplication<GroveApplication>(*args)
-}
+@ConfigurationProperties(prefix = "grove.maven")
+data class MavenProps(
+    var enabled: Boolean = true,
+    var storageDir: Path = Path.of("storage/maven"),
+    /** Public base URL for Maven endpoints, e.g. http://localhost:8080/maven */
+    var baseUrl: String = "http://localhost:8080/maven"
+)
