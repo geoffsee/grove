@@ -1,11 +1,12 @@
-# 🌳 Grove: Minimal Self-Hosted npm, PyPI & Maven Registry (Spring Boot + Kotlin)
+# 🌳 Grove: Minimal Self-Hosted npm, PyPI, Maven & OCI Registry (Spring Boot + Kotlin)
 
-Grove is a tiny, filesystem-backed registry for npm, PyPI, and Maven — ideal for air‑gapped development, CI/CD bootstrapping, or local/private publishing and install.
+Grove is a tiny, filesystem-backed registry for npm, PyPI, Maven, and OCI — ideal for air‑gapped development, CI/CD bootstrapping, or local/private publishing and install.
 It is a single Spring Boot app, runnable as a jar, requiring no external database or service.
 
 - npm: Minimal endpoints for publish (via curl) and install (unscoped)
 - PyPI: Serves a PEP 503 "simple" index and supports pip install and direct uploads
 - Maven: Acts as a simple Maven repository with curl-based uploads and standard resolver compatibility
+- OCI: Minimal Docker Distribution (v2) compatible API for blobs, manifests, and tags
 
 > 🔒 No authentication or token required by default
 > 💾 Artifacts are stored on disk — easy to back up, move, or inspect
@@ -31,9 +32,21 @@ It is a single Spring Boot app, runnable as a jar, requiring no external databas
   - Example path layout: `/maven/com/example/app/my-app/1.0.0/my-app-1.0.0.jar`
   - Automatically maintains `maven-metadata.xml` at `groupId/artifactId/`
 
+### OCI (under `/v2`)
+- `GET /v2/` — ping (Docker-Distribution-API-Version header)
+- `POST /v2/{name}/blobs/uploads/` — start upload or monolithic upload with `?digest=sha256:<hex>`
+- `PATCH /v2/{name}/blobs/uploads/{uuid}` — append chunk data
+- `PUT /v2/{name}/blobs/uploads/{uuid}?digest=sha256:<hex>` — finalize upload; stores blob by digest
+- `HEAD|GET /v2/{name}/blobs/{digest}` — fetch or check blob
+- `PUT /v2/{name}/manifests/{reference}` — store manifest by tag or digest
+- `HEAD|GET /v2/{name}/manifests/{reference}` — fetch manifest; returns Docker-Content-Digest
+- `GET /v2/{name}/tags/list` — list tags for a repository
+
+All routes support multi-segment names (e.g., `myorg/project/image`).
+
 ### Storage
-- All data is stored under a configured root (`storage/npm`, `storage/pypi` by default)
-- npm keeps per‑package `metadata.json` and tarballs; PyPI stores uploaded files
+- All data is stored under configured roots (defaults under `storage/`)
+- npm: per‑package `metadata.json` + tarballs; PyPI: uploaded files; Maven: artifacts + `maven-metadata.xml`; OCI: blobs by digest and manifest/tag files
 - No database; just JSON + files
 
 ---
@@ -65,6 +78,12 @@ grove.npm.base-url=http://localhost:8080/npm
 # pypi
 grove.pypi.storage-dir=storage/pypi
 grove.pypi.base-url=http://localhost:8080/pypi
+# maven
+grove.maven.storage-dir=storage/maven
+grove.maven.base-url=http://localhost:8080/maven
+# oci (Docker/OCI v2)
+grove.oci.storage-dir=storage/oci
+grove.oci.base-url=http://localhost:8080/v2
 ```
 
 
@@ -178,6 +197,77 @@ curl http://localhost:8080/npm/mypkg
 
 ---
 
+### OCI
+
+#### Ping
+
+```bash
+curl -i http://localhost:8080/v2/
+```
+
+#### Monolithic blob upload (simple example)
+
+```bash
+# Prepare a small blob and compute its sha256
+printf 'hello' > blob.bin
+# Linux: D=$(sha256sum blob.bin | cut -d' ' -f1)
+# macOS: D=$(shasum -a 256 blob.bin | cut -d' ' -f1)
+
+# Upload in a single POST by providing the digest query
+curl -s -D - \
+  -X POST \
+  --data-binary @blob.bin \
+  "http://localhost:8080/v2/myorg/demo/blobs/uploads/?digest=sha256:$D"
+```
+
+#### Put a manifest (tag: latest)
+
+```bash
+cat > manifest.json <<EOF
+{
+  "schemaVersion": 2,
+  "mediaType": "application/vnd.oci.image.manifest.v1+json",
+  "config": {
+    "mediaType": "application/vnd.oci.image.config.v1+json",
+    "digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "size": 2
+  },
+  "layers": [
+    {
+      "mediaType": "application/vnd.oci.image.layer.v1.tar",
+      "digest": "sha256:$D",
+      "size": $(wc -c < blob.bin)
+    }
+  ]
+}
+EOF
+
+curl -i \
+  -H "Content-Type: application/vnd.oci.image.manifest.v1+json" \
+  -X PUT --data-binary @manifest.json \
+  http://localhost:8080/v2/myorg/demo/manifests/latest
+```
+
+#### Other handy calls
+
+```bash
+# List tags
+curl http://localhost:8080/v2/myorg/demo/tags/list
+
+# Get manifest by tag
+curl -i http://localhost:8080/v2/myorg/demo/manifests/latest
+
+# Get blob by digest
+curl -I http://localhost:8080/v2/myorg/demo/blobs/sha256:$D
+```
+
+Notes:
+- Multi-segment repository names are supported (e.g., myorg/project/image)
+- Only sha256 digests are accepted in this MVP
+- No auth; suitable for trusted/dev environments
+
+---
+
 ## Storage layout
 
 ```
@@ -186,9 +276,29 @@ storage/
 │  └─ mypkg/
 │     ├─ mypkg-1.0.0.tgz
 │     └─ metadata.json
-└─ pypi/
-   └─ demo-pkg/
-      └─ demo_pkg-0.1.0-py3-none-any.whl
+├─ pypi/
+│  └─ demo-pkg/
+│     └─ demo_pkg-0.1.0-py3-none-any.whl
+├─ maven/
+│  └─ com/example/app/my-app/
+│     ├─ 1.0.0/
+│     │  ├─ my-app-1.0.0.jar
+│     │  └─ my-app-1.0.0.pom
+│     └─ maven-metadata.xml
+└─ oci/
+   ├─ uploads/
+   │  └─ {uuid}
+   ├─ blobs/
+   │  └─ sha256/
+   │     └─ {digest-hex}
+   └─ repositories/
+      └─ myorg/demo/
+         └─ manifests/
+            ├─ tags/
+            │  └─ latest
+            └─ digests/
+               └─ sha256/
+                  └─ {digest-hex}
 ```
 
 ---
@@ -204,7 +314,7 @@ storage/
 ## Development
 
 - Kotlin + Spring Boot (see `ltd.gsio.grove.*` packages)
-- Configuration properties: `NpmProps`, `PypiProps` (enabled via `@EnableConfigurationProperties`)
+- Configuration properties: `NpmProps`, `PypiProps`, `MavenProps`, `OciProps` (enabled via `@EnableConfigurationProperties`)
 - Shared storage helper: `StorageUtil`
 - Tests under `src/test`
 
@@ -279,4 +389,4 @@ All dependencies are compatible with Apache 2.0.
 
 ## References
 
-See `project-docs/` for background on minimal PyPI and npm registries.
+See docs/mvp-test-plan.md for background on minimal registries and test coverage for npm, PyPI, Maven, and OCI.
